@@ -81,7 +81,7 @@ public class Main {
             System.out.println(optionList.get(i));}
 
     private static void moveItem(Scanner in, ArrayList optionList){
-            int fromIndex = SafeInput.getRangedInt(in, "Please enter the line number you want to move.", 1, list.size())-1;
+            int fromIndex = SafeInput.getRangedInt(in, "Please enter the line number you want to move.", 1, optionList.size())-1;
         }
     }
 }
