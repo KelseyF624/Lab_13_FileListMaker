@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -29,7 +30,24 @@ public class Main {
                     case "Q":
                         if (SafeInput.getYNConfirm(in, "Are you sure you want to quit? [Y/N] ")) {
                             done = true;}
-                        break; }
+                        break;
+                    case "M":
+                        moveItem();
+                        break;
+                    case "O":
+                        openList();
+                        break;
+                    case "S":
+                        saveList();
+                        break;
+                    case "C":
+                        clearList();
+                        break;
+                    case "V":
+                        viewList();
+                        break;
+
+                }
 
             }while (!done);
     }
@@ -61,6 +79,10 @@ public class Main {
 
         for (int i = 0; i < optionList.size(); i++) {
             System.out.println(optionList.get(i));}
+
+    private static void moveItem(Scanner in, ArrayList optionList){
+            int fromIndex = SafeInput.getRangedInt(in, "Please enter the line number you want to move.", 1, list.size())-1;
+        }
     }
 }
 
