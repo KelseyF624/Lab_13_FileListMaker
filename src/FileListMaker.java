@@ -1,8 +1,7 @@
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
+public class FileListMaker {
     public static void main(String[] args) {
 
         ArrayList<String> optionList = new ArrayList<>();
@@ -80,7 +79,7 @@ public class Main {
         for (int i = 0; i < optionList.size(); i++) {
             System.out.println(optionList.get(i));}
 
-    private static void moveItem(Scanner in, ArrayList optionList){
+    private static void moveItem (in, ArrayList optionList){
             int fromIndex = SafeInput.getRangedInt(in, "Please enter the line number you want to move.", 1, optionList.size())-1;
         }
     }
