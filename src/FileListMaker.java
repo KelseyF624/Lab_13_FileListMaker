@@ -39,27 +39,30 @@ public class FileListMaker {
                         }
                         needsToBeSaved = true;
                         break;
+
                     case "M":
                         moveItem(optionList, needsToBeSaved);
                         needsToBeSaved = true;
                         break;
+
                     case "O":
                         openList(in, optionList, needsToBeSaved);
                         needsToBeSaved = true;
                         break;
+
                     case "S":
                         saveList(optionList, fileName);
                         needsToBeSaved = true;
                         break;
+
                     case "C":
                         clearList(optionList);
                         needsToBeSaved = true;
                         break;
+
                     case "V":
                         showItems (optionList);
-                        break;
-
-                }
+                        break;}
 
             }while (!done);
     }
@@ -75,7 +78,7 @@ public class FileListMaker {
         }
 
         return SafeInput.getRegExString(in, "Type the letter you wish to select and then press enter.\n" +
-                "A or I: add an item. \n D: Delete an item. \n P: Print the list. \n Q: Quit.", "[AaIiDdPpQq]"); }
+                "A or I: add an item. \n D: Delete an item. \n P or V: Print the list. \n Q: Quit. \n M: Move an item. \n O: Open a list. \n S: Save list. \n C: Clear list. \n", "[AaIiDdPpVvQqMmOoSsCc]"); }
 
     private static void removeItem(Scanner in, ArrayList optionList) {
 
