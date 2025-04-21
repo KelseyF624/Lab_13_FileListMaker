@@ -40,7 +40,7 @@ public class FileListMaker {
                         needsToBeSaved = true;
                         break;
                     case "M":
-                        moveItem(optionList);
+                        moveItem(optionList, needsToBeSaved);
                         needsToBeSaved = true;
                         break;
                     case "O":
@@ -99,14 +99,15 @@ public class FileListMaker {
 
     private static void moveItem(ArrayList optionList, boolean needsToBeSaved) {
 
+        int selectItem = 0;
         Scanner in = new Scanner(System.in);
         if (optionList.isEmpty()) {
             System.out.println("The list is empty.");
             return;}
         showItems(optionList);
-        int selectItem = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
-        int newLocation = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size())
-        String moved = optionList.remove(selectItem);
+        selectItem = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
+        int newLocation = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size());
+        String moved = (String) optionList.remove(selectItem);
         optionList.add(newLocation, moved);
         needsToBeSaved = true;
         System.out.println("Moved " + moved + " to " + newLocation);
