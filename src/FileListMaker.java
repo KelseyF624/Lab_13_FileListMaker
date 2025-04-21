@@ -1,6 +1,4 @@
-import javax.swing.*;
 import java.io.*;
-import static java.nio.file.StandardOpenOption.CREATE;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.nio.file.*;
 import javax.swing.JFileChooser;
