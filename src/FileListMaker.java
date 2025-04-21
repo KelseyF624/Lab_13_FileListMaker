@@ -1,20 +1,22 @@
 import javax.swing.*;
-import java.io.File;
+import java.io.*;
+import static java.nio.file.StandardOpenOption.CREATE;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import javax.swing.JFileChooser;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FileListMaker {
-    public static void main(String[] args) {
 
-        ArrayList<String> optionList = new ArrayList<>();
+    static boolean needsToBeSaved = false;
+    static File currentFile = null;
+    static ArrayList<String> optionList = new ArrayList<>();
+
+    public static void main(String[] args) throws IOException {
+
             Scanner in = new Scanner(System.in);
             boolean done = false;
-            boolean needsToBeSaved = false;
             String fileName = "";
             String items = "";
 
@@ -102,37 +104,49 @@ public class FileListMaker {
 
     private static void moveItem(ArrayList optionList, boolean needsToBeSaved) {
 
-        int selectItem = 0;
         Scanner in = new Scanner(System.in);
+
         if (optionList.isEmpty()) {
             System.out.println("The list is empty.");
             return;}
+
         showItems(optionList);
-        selectItem = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
-        int newLocation = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size());
-        String moved = (String) optionList.remove(selectItem);
-        optionList.add(newLocation, moved);
+
+        int fromList = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
+        int toList = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size());
+
+        String item = (String) optionList.remove(fromList);
+        optionList.add(toList, item);
         needsToBeSaved = true;
-        System.out.println("Moved " + moved + " to " + newLocation);
+        System.out.println("Moved " + item + " to " + toList);
     }
 
-    private static void saveList(ArrayList optionList, String fileName) {
+    private static void saveList(ArrayList optionList, String fileName) throws IOException{
 
         PrintWriter outFile;
         Path target = new File(System.getProperty("user.dir")).toPath();
 
-        if (fileName.equals("")) {
-            target = target.resolve("src\\list.txt");}
-        else {
-            target = target.resolve(fileName);}
-        try {
-            outFile = new PrintWriter(target.toString());
-            for (int i = 0; i < optionList.size(); i ++){
-            outFile.println(optionList.get(i));}
-            outFile.close();
-            System.out.println("List written to " + target);
-        }catch (IOException e){
-            System.out.println("Error writing to " + target);}
+        if (currentFile == null) {
+            JFileChooser chooser = new JFileChooser();
+            File workingDirectory = new File(System.getProperty("user.dir"));
+            chooser.setCurrentDirectory(workingDirectory);
+        if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
+            currentFile = chooser.getSelectedFile();
+            if (!currentFile.getName().endsWith(".txt")) {
+                currentFile = new File(currentFile.getAbsolutePath() + ".txt");}
+            }
+        }
+        else
+        {System.out.println("Save failed.");
+            return;}
+        Path file = currentFile.toPath();
+        OutputStream out = new BufferedOutputStream(new FileOutputStream(file.toString()));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+        for (Object rec: optionList) {
+            writer.newLine();}
+        writer.close();
+        needsToBeSaved = true;
+        System.out.println("Saved " + currentFile + " to " + file.toString());
     }
 
     private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) {
