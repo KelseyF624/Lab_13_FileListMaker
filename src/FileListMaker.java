@@ -2,6 +2,8 @@ import java.io.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.nio.file.*;
 import javax.swing.JFileChooser;
+import static java.lang.System.out;
+import static java.nio.file.StandardOpenOption.CREATE;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -103,12 +105,11 @@ public class FileListMaker {
     private static void moveItem(ArrayList optionList, boolean needsToBeSaved) {
 
         Scanner in = new Scanner(System.in);
+        showItems(optionList);
 
         if (optionList.isEmpty()) {
             System.out.println("The list is empty.");
             return;}
-
-        showItems(optionList);
 
         int fromList = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
         int toList = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size());
