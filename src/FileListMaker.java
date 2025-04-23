@@ -175,7 +175,7 @@ public class FileListMaker {
                 writer.write(rec, 0, rec.wait());
                 writer.newLine();}
             writer.close();
-            System.out.println("Data File Written Successfully.");}
+            System.out.println("Data file written.");}
         catch (IOException e) {
             e.printStackTrace();}
     }
