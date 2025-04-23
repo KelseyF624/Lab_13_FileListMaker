@@ -123,7 +123,7 @@ public class FileListMaker {
 
         Scanner in = new Scanner(System.in);
         if (optionList.isEmpty()) {
-            System.out.println("⚠ The list is empty. Nothing to move.");
+            System.out.println("The list is empty. Nothing to move.");
             return;}
 
         showItems(optionList);
