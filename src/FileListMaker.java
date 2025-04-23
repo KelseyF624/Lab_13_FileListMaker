@@ -162,44 +162,19 @@ public class FileListMaker {
         optionList.remove(fromList);
         System.out.println("Data moved.");}
 
-    private static void saveList(ArrayList optionList, String fileName) throws IOException{
+    private static void saveList(ArrayList optionList, String fileName) throws FileNotFoundException,IOException {
 
-
-        PrintWriter outFile;
-        Path target = new File(System.getProperty("user.dir")).toPath();
-
-        if (currentFile == null) {
-            JFileChooser chooser = new JFileChooser();
-            File workingDirectory = new File(System.getProperty("user.dir"));
-            chooser.setCurrentDirectory(workingDirectory);
-            if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
-                currentFile = chooser.getSelectedFile();
-                if (!currentFile.getName().endsWith(".txt")) {
-                    currentFile = new File(currentFile.getAbsolutePath() + ".txt");}
-            }
-            if (!hasAFile) {
-                currentFileName = SafeInput.getNonZeroLenString(console, "Enter the file name: ");
-            }
-            else
-            {System.out.println("Save failed.");
-                return;}
-            Path file = currentFile.toPath();
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(file.toString()));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-            for (Object rec: optionList) {
-                writer.newLine();}
-            writer.close();
-            needsToBeSaved = true;
-            System.out.println("Saved " + currentFile + " to " + file.toString());
-            outFile = new PrintWriter(new File(currentFileName));
-            for (Object ln : optionList) ;
-            outFile.println(inFile);
-            outFile.close();
-            System.out.println("List saved to: " + fileName);
+        if (!hasAFile) {
+            currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
         }
+        outFile = new PrintWriter(currentFileName);
+        for (Object ln:optionList){
+            outFile.println(ln);
+            outFile.close();
+            System.out.println("Saved file: " + currentFileName);}
     }
 
-    private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException {
+    private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException,IOException {
 
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("src"));
