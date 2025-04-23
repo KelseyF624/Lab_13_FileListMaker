@@ -164,21 +164,10 @@ public class FileListMaker {
 
     private static void saveList(ArrayList optionList, String fileName) throws IOException{
 
+
         PrintWriter outFile;
         Path target = new File(System.getProperty("user.dir")).toPath();
 
-        if (fileName.equals("")) {
-            target = target.resolve("src\\list.txt");}
-        else {
-            target = target.resolve(fileName);}
-        try {
-            outFile = new PrintWriter(target.toString());
-            for (int i = 0; i < optionList.size(); i ++){
-                outFile.println(optionList.get(i));}
-            outFile.close();
-            System.out.println("List written to " + target);
-        }catch (IOException e){
-            System.out.println("Error writing to " + target);}
         if (currentFile == null) {
             JFileChooser chooser = new JFileChooser();
             File workingDirectory = new File(System.getProperty("user.dir"));
@@ -188,18 +177,26 @@ public class FileListMaker {
                 if (!currentFile.getName().endsWith(".txt")) {
                     currentFile = new File(currentFile.getAbsolutePath() + ".txt");}
             }
+            if (!hasAFile) {
+                currentFileName = SafeInput.getNonZeroLenString(console, "Enter the file name: ");
+            }
+            else
+            {System.out.println("Save failed.");
+                return;}
+            Path file = currentFile.toPath();
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(file.toString()));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+            for (Object rec: optionList) {
+                writer.newLine();}
+            writer.close();
+            needsToBeSaved = true;
+            System.out.println("Saved " + currentFile + " to " + file.toString());
+            outFile = new PrintWriter(new File(currentFileName));
+            for (Object ln : optionList) ;
+            outFile.println(inFile);
+            outFile.close();
+            System.out.println("List saved to: " + fileName);
         }
-        else
-        {System.out.println("Save failed.");
-            return;}
-        Path file = currentFile.toPath();
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(file.toString()));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-        for (Object rec: optionList) {
-            writer.newLine();}
-        writer.close();
-        needsToBeSaved = true;
-        System.out.println("Saved " + currentFile + " to " + file.toString());
     }
 
     private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException {
