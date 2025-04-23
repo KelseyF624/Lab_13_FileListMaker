@@ -6,6 +6,9 @@ import javax.swing.JFileChooser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class FileListMaker {
 
@@ -25,6 +28,7 @@ public class FileListMaker {
 
         Scanner in = new Scanner(System.in);
         boolean done = false;
+        boolean saveConfirm = true;
         String fileName = "";
         String items = "";
 
@@ -35,16 +39,19 @@ public class FileListMaker {
 
             switch (items) {
                 case "A", "I":
+                    case "a", "i":
                     addItem(in, optionList);
                     needsToBeSaved = true;
                     break;
 
                 case "D":
+                    case "d":
                     removeItem(in, optionList);
                     needsToBeSaved = true;
                     break;
 
                 case "Q":
+                    case "q":
                     if (SafeInput.getYNConfirm(in, "Are you sure you want to quit? [Y/N] ")) {
                         done = true;
                     }
@@ -52,26 +59,39 @@ public class FileListMaker {
                     break;
 
                 case "M":
+                    case "m":
                     moveItem(optionList, needsToBeSaved);
                     needsToBeSaved = true;
                     break;
 
                 case "O":
-                    openList(in, optionList, needsToBeSaved);
-                    needsToBeSaved = true;
+                    case "o":
+                    if(!needsToBeSaved) {
+                        openList(in, optionList, needsToBeSaved);
+                    }
+                    else {
+                        saveConfirm = SafeInput.getYNConfirm(in, "Would you like to save?");
+                    if (saveConfirm) {
+                        System.out.println("Save the file from the menu.");}
+                    else {
+                        openList(in, optionList, needsToBeSaved);}
+                    }
                     break;
 
                 case "S":
+                    case "s":
                     saveList(optionList, fileName);
                     needsToBeSaved = true;
                     break;
 
                 case "C":
+                    case "c":
                     clearList(optionList);
                     needsToBeSaved = true;
                     break;
 
                 case "V":
+                    case "v":
                     showItems(optionList);
                     break;
             }
@@ -154,10 +174,15 @@ public class FileListMaker {
         JFileChooser chooser = new JFileChooser();
         File workingDirectory = new File(System.getProperty("user.dir"));
         chooser.setCurrentDirectory(workingDirectory);
+        String readInfo = "";
+        File selectedFile = null;
+        File subFolder = new File(workingDirectory, "src");
 
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             inFile = new Scanner(chooser.getSelectedFile());
+            Path file = selectedFile.toPath();
             optionList.clear();
+            BufferedReader reader = new BufferedReader(new FileReader(file.toFile()));
             while (inFile.hasNextLine()) {
                 optionList.add(inFile.nextLine());}
             inFile.close();
