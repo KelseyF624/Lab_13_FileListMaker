@@ -3,6 +3,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.PrintWriter;
 import javax.swing.JFileChooser;
+import java.io.File;
+import java.nio.file.Path;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -212,29 +215,31 @@ public class FileListMaker {
     private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException {
 
         JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("src"));
+        Path target = new File(System.getProperty("user.dir") + "\\src\\main\\java\\FileInspector.java").toPath();
+        target = target.resolve("src");
         File workingDirectory = new File(System.getProperty("user.dir"));
-        chooser.setCurrentDirectory(workingDirectory);
-        String readInfo = "";
-        File selectedFile = null;
-        File subFolder = new File(workingDirectory, "src");
 
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            inFile = new Scanner(chooser.getSelectedFile());
-            Path file = selectedFile.toPath();
-            optionList.clear();
-            BufferedReader reader = new BufferedReader(new FileReader(file.toFile()));
-            while (inFile.hasNextLine()) {
-                optionList.add(inFile.nextLine());}
-            inFile.close();
-            currentFileName = chooser.getSelectedFile().getName();
-            hasAFile = true;
-            newUnsaved = false;
-            fileSaving = false;
-            System.out.println("Opened " + currentFileName);
-        }
-        else {
-            System.out.println("You didn't choose a file.");
-            return;}
+        try {
+
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                target = chooser.getSelectedFile().toPath();
+                inFile = new Scanner(target);
+                optionList.clear();
+                while (inFile.hasNextLine()) {
+                    optionList.add(inFile.nextLine());}
+                inFile.close();
+                currentFileName = chooser.getSelectedFile().getName();
+                hasAFile = true;
+                newUnsaved = false;
+                fileSaving = false;
+                System.out.println("Opened " + currentFileName);} else {
+                System.out.println("No such file or directory. Terminating.");
+                System.exit(0);}
+        } catch (Exception e) {
+            System.out.println("Error.");
+            e.printStackTrace();
+            System.exit(0);}
     }
 }
 
