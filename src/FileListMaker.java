@@ -147,11 +147,11 @@ public class FileListMaker {
         currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
 
         if (fileName.equals("")) {
-            target = target.resolve("src\\list.txt");}
+            target = target.resolve("src");}
         else {
             target = target.resolve(fileName);}
         try {
-            outFile = new PrintWriter(target.toString());
+            outFile = new PrintWriter(currentFileName);
             for (int i = 0; i < optionList.size(); i++) {
                 outFile.println(optionList.get(i));}
             outFile.close();
