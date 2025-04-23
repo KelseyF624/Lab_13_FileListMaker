@@ -51,12 +51,20 @@ public class SafeInput {
             System.out.print(prompt + "[" + lo + "," + hi + "]: ");
             if (pipe.hasNextInt()) {
                 retInt = pipe.nextInt();
-                pipe.nextLine();}
-            if (retInt >= lo && retInt <= hi) {
-                done = true;}
-            else {System.out.println("Invalid input. Enter an integer between " + lo + " and " + hi);}
+                pipe.nextLine();
+                if (retInt >= lo && retInt <= hi) {
+                    done = true;
+                } else {
+                    System.out.println("Invalid input. Enter an integer between " + lo + " and " + hi);
+                }
+            }
+            else {
+            trash = pipe.nextLine();
+            System.out.print("Invalid input. Enter an integer between " + lo + " and " + hi);}
         }while (!done);
+
         return retInt;}
+
     public static double getRangedDouble (Scanner pipe, String prompt, double lo, double hi) {
         boolean done = false;
         double retDouble = 0;
