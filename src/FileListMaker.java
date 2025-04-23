@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 
+import static java.nio.file.StandardOpenOption.CREATE;
+
 public class FileListMaker {
 
     static boolean needsToBeSaved = false;
@@ -164,14 +166,18 @@ public class FileListMaker {
 
     private static void saveList(ArrayList optionList, String fileName) throws FileNotFoundException,IOException {
 
-        if (!hasAFile) {
-            currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
-        }
-        outFile = new PrintWriter(currentFileName);
-        for (String ln:optionList){
-            outFile.println(ln);
-            outFile.close();
-            System.out.println("Saved file: " + currentFileName);}
+        try {
+            File workingDirectory = new File(System.getProperty("user.dir"));
+            Path file = Paths.get(workingDirectory.getPath() + "\\src\\" + fileName + ".txt");
+            OutputStream out = new BufferedOutputStream(Files.newOutputStream(file, CREATE));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+            for (Object rec : optionList) {
+                writer.write(rec, 0, rec.wait());
+                writer.newLine();}
+            writer.close();
+            System.out.println("Data File Written Successfully.");}
+        catch (IOException e) {
+            e.printStackTrace();}
     }
 
     private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException,IOException {
