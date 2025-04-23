@@ -125,35 +125,13 @@ public class FileListMaker {
         if (optionList.isEmpty()) {
             System.out.println("The list is empty. Nothing to move.");
             return;}
-
         showItems(optionList);
         int fromList = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size()) - 1;
         int toList = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size()) - 1;
-
         Object item = optionList.remove(fromList);
         optionList.add(toList, item);
         needsToBeSaved = true;
         System.out.println("Moved item to position " + (toList + 1));}
-//        Object userMove;
-//        Object replaceLocation;
-//        int fromList;
-//        int toList;
-//        Scanner in = new Scanner(System.in);
-//        showItems(optionList);
-//
-//        fromList = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
-//        userMove = optionList.get(fromList - 1);
-//        toList = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size());
-//        replaceLocation = optionList.getLast();
-//
-//        for (int x = optionList.size() - 1; x >= toList - 1; x--) {
-//            optionList.set(x, optionList.get(x));
-//        }
-//        optionList.set(toList - 1, userMove);
-//        optionList.add(replaceLocation);
-//        optionList.remove(fromList);
-//        System.out.println("Data moved.");
-//    }
 
     private static void saveList(ArrayList optionList, String fileName) throws FileNotFoundException, IOException {
 
