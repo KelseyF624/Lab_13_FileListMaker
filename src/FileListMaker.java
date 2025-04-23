@@ -1,19 +1,12 @@
-import java.io.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.PrintWriter;
 import javax.swing.JFileChooser;
-import java.io.File;
 import java.nio.file.Path;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.Path;
-
-import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FileListMaker {
 
@@ -44,19 +37,16 @@ public class FileListMaker {
 
             switch (items) {
                 case "A", "I":
-                    case "a", "i":
                     addItem(in, optionList);
                     needsToBeSaved = true;
                     break;
 
                 case "D":
-                    case "d":
                     removeItem(in, optionList);
                     needsToBeSaved = true;
                     break;
 
                 case "Q":
-                    case "q":
                     if (SafeInput.getYNConfirm(in, "Are you sure you want to quit? [Y/N] ")) {
                         done = true;
                     }
@@ -64,39 +54,25 @@ public class FileListMaker {
                     break;
 
                 case "M":
-                    case "m":
                     moveItem(optionList, needsToBeSaved);
                     needsToBeSaved = true;
                     break;
 
                 case "O":
-                    case "o":
-                    if(!needsToBeSaved) {
-                        openList(in, optionList, needsToBeSaved);
-                    }
-                    else {
-                        saveConfirm = SafeInput.getYNConfirm(in, "Would you like to save?");
-                    if (saveConfirm) {
-                        System.out.println("Save the file from the menu.");}
-                    else {
-                        openList(in, optionList, needsToBeSaved);}
-                    }
-                    break;
+                        fileName = openList(in, optionList, needsToBeSaved);
+                        break;
 
                 case "S":
-                    case "s":
                     saveList(optionList, fileName);
                     needsToBeSaved = true;
                     break;
 
                 case "C":
-                    case "c":
                     clearList(optionList);
                     needsToBeSaved = true;
                     break;
 
                 case "V":
-                    case "v":
                     showItems(optionList);
                     break;
             }
@@ -166,55 +142,55 @@ public class FileListMaker {
 
     private static void saveList(ArrayList optionList, String fileName) throws FileNotFoundException,IOException {
 
-        if (!hasAFile) {
-            currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
-        }
-        outFile = new PrintWriter(currentFileName);
-        for (Object ln:optionList){
-            outFile.println(ln);
-            outFile.close();
-            System.out.println("Saved file: " + currentFileName);}
+        PrintWriter outFile;
+        Path target = new File(System.getProperty("user.dir")).toPath();
+
+        if (fileName.equals("")) {
+            target = target.resolve("src\\list.txt");}
+        else {
+            target = target.resolve(fileName);}
         try {
-            File workingDirectory = new File(System.getProperty("user.dir"));
-            Path file = Paths.get(workingDirectory.getPath() + "\\src\\" + fileName + ".txt");
-            OutputStream out = new BufferedOutputStream(Files.newOutputStream(file, CREATE));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-            for (Object rec : optionList) {
-                writer.newLine();}
-            writer.close();
-            System.out.println("Data file written.");}
+            outFile = new PrintWriter(target.toString());
+            for (int i = 0; i < optionList.size(); i++) {
+                outFile.println(optionList.get(i));}
+            outFile.close();
+            System.out.printf("File \"%s\" saved!\n", target.getFileName());}
         catch (IOException e) {
-            e.printStackTrace();}
+            System.out.println("IOException Error");}
     }
 
-    private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException,IOException {
+    private static String openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException,IOException {
 
+        if (needsToBeSaved) {
+            String prompt = "Opening a new list will result in the loss of your current one. Are you sure you want to do this?";
+            boolean byeListYN = SafeInput.getYNConfirm(in, prompt);
+            if (!byeListYN) {
+                return prompt;
+            }
+        }
+        clearList(optionList);
+        Scanner inFile;
         JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new File("src"));
-        Path target = new File(System.getProperty("user.dir") + "\\src\\main\\java\\FileInspector.java").toPath();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
+        chooser.setFileFilter(filter);
+        String line = "";
+        Path target = new File(System.getProperty("user.dir")).toPath();
         target = target.resolve("src");
-        File workingDirectory = new File(System.getProperty("user.dir"));
+        chooser.setCurrentDirectory(target.toFile());
 
         try {
-
             if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 target = chooser.getSelectedFile().toPath();
                 inFile = new Scanner(target);
-                optionList.clear();
+                System.out.println("Opening File: " + target.getFileName());
                 while (inFile.hasNextLine()) {
-                    optionList.add(inFile.nextLine());}
-                inFile.close();
-                currentFileName = chooser.getSelectedFile().getName();
-                hasAFile = true;
-                newUnsaved = false;
-                fileSaving = false;
-                System.out.println("Opened " + currentFileName);} else {
-                System.out.println("No such file or directory. Terminating.");
-                System.exit(0);}
-        } catch (Exception e) {
-            System.out.println("Error.");
-            e.printStackTrace();
-            System.exit(0);}
-    }
+                    line = inFile.nextLine();
+                    optionList.add(line);}
+                inFile.close();}
+            else {System.out.println("You must select a file! Returning to menu...");}
+        }
+        catch (IOException e) {
+            System.out.println("IOException Error");}
+        return line;}
 }
 
