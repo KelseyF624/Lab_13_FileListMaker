@@ -168,7 +168,7 @@ public class FileListMaker {
             currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
         }
         outFile = new PrintWriter(currentFileName);
-        for (Object ln:optionList){
+        for (String ln:optionList){
             outFile.println(ln);
             outFile.close();
             System.out.println("Saved file: " + currentFileName);}
