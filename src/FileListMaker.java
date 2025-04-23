@@ -144,6 +144,7 @@ public class FileListMaker {
 
         PrintWriter outFile;
         Path target = new File(System.getProperty("user.dir")).toPath();
+        currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
 
         if (fileName.equals("")) {
             target = target.resolve("src\\list.txt");}
