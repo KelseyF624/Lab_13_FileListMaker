@@ -143,22 +143,24 @@ public class FileListMaker {
 
     private static void moveItem(ArrayList optionList, boolean needsToBeSaved) {
 
+        Object userMove;
+        Object replaceLocation;
+        int fromList;
+        int toList;
         Scanner in = new Scanner(System.in);
         showItems(optionList);
 
-        if (optionList.isEmpty()) {
-            System.out.println("The list is empty.");
-            return;
-        }
+        fromList = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
+        userMove = optionList.get(fromList - 1);
+        toList = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size());
+        replaceLocation = optionList.getLast();
 
-        int fromList = SafeInput.getRangedInt(in, "Enter the item you want to move: ", 1, optionList.size());
-        int toList = SafeInput.getRangedInt(in, "Enter the location on the list where you want to move the item.: ", 1, optionList.size());
-
-        String item = (String) optionList.remove(fromList);
-        optionList.add(toList, item);
-        needsToBeSaved = true;
-        System.out.println("Moved " + item + " to " + toList);
-    }
+        for (int x = optionList.size() - 1; x >= toList -1; x--) {
+            optionList.set(x, optionList.get(x));}
+        optionList.set(toList -1, userMove);
+        optionList.add(replaceLocation);
+        optionList.remove(fromList);
+        System.out.println("Data moved.");}
 
     private static void saveList(ArrayList optionList, String fileName) throws IOException{
 
@@ -199,18 +201,6 @@ public class FileListMaker {
         needsToBeSaved = true;
         System.out.println("Saved " + currentFile + " to " + file.toString());
     }
-
-
-//    private static void saveList(ArrayList optionList, String fileName) throws IOException {
-//
-//        if (!hasAFile) {
-//            currentFileName = SafeInput.getNonZeroLenString(console, "Enter the file name: ");
-//        }
-//        outFile = new PrintWriter(new File(currentFileName));
-//        for (Object ln : optionList) ;
-//        outFile.println(inFile);
-//        outFile.close();
-//        System.out.println("List saved to: " + fileName);}
 
     private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException {
 
