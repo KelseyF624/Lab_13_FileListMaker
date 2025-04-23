@@ -149,20 +149,17 @@ public class FileListMaker {
         currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
 
         if (fileName.equals("")) {
-            target = target.resolve("src");
-        } else {
-            target = target.resolve(fileName);
-        }
+            target = target.resolve("src");}
+        else {
+            target = target.resolve(fileName);}
         try {
             outFile = new PrintWriter(currentFileName);
             for (int i = 0; i < optionList.size(); i++) {
-                outFile.println(optionList.get(i));
-            }
+                outFile.println(optionList.get(i));}
             outFile.close();
-            System.out.printf("File \"%s\" saved!\n", target.getFileName());
-        } catch (IOException e) {
-            System.out.println("IOException Error");
-        }
+            System.out.printf("File \"%s\" saved!\n", target.getFileName());}
+        catch (IOException e) {
+            System.out.println("IOException Error");}
     }
 
     private static String openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException, IOException {
