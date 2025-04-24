@@ -61,12 +61,12 @@ public class FileListMaker {
                     break;
 
                 case "S":
-                    saveList(optionList, fileName);
+                    saveList();
                     needsToBeSaved = true;
                     break;
 
                 case "C":
-                    clearList(optionList);
+                    clearList(in, optionList);
                     needsToBeSaved = true;
                     break;
 
@@ -112,11 +112,6 @@ public class FileListMaker {
         }
     }
 
-    private static void clearList(ArrayList optionList) {
-
-        optionList.clear();
-    }
-
     private static void moveItem(ArrayList optionList, boolean needsToBeSaved) {
 
         Scanner in = new Scanner(System.in);
@@ -131,16 +126,16 @@ public class FileListMaker {
         needsToBeSaved = true;
         System.out.println("Moved item to position " + (toList + 1));}
 
-    private static void saveList(ArrayList optionList, String fileName) throws FileNotFoundException, IOException {
+    private static void saveList() throws FileNotFoundException, IOException {
 
         PrintWriter outFile;
         Path target = new File(System.getProperty("user.dir")).toPath();
         currentFileName = SafeInput.getNonZeroLenString(console, "Enter the name of the file: ");
 
-        if (fileName.equals("")) {
+        if (currentFileName.equals("")) {
             target = target.resolve("src");}
         else {
-            target = target.resolve(fileName);}
+            target = target.resolve(currentFileName);}
         try {
             outFile = new PrintWriter(currentFileName);
             for (int i = 0; i < optionList.size(); i++) {
@@ -152,6 +147,12 @@ public class FileListMaker {
     }
 
     private static void openList(Scanner in, ArrayList optionList, boolean needsToBeSaved) throws FileNotFoundException, IOException {
+
+        if (needsToBeSaved) {
+            boolean saveFirst = SafeInput.getYNConfirm(in, "You have unsaved changes. Save before opening a new list?[Y/N");
+            if (saveFirst) {
+                saveList();}
+        }
 
         JFileChooser chooser = new JFileChooser();
         File workingDirectory = new File(System.getProperty("user.dir"));
@@ -170,7 +171,16 @@ public class FileListMaker {
         else {
             System.out.println("You didn't choose a file.");}
     }
-}
+    private static void clearList(Scanner in, ArrayList optionList) throws IOException {
+
+            boolean saveFirst = SafeInput.getYNConfirm(in, "You have unsaved changes. Save before opening a new list?[Y/N]");
+            if (saveFirst) {
+                saveList();}
+            optionList.clear();
+            needsToBeSaved = true;
+            System.out.println("List cleared.");}
+    }
+
 
 
 
